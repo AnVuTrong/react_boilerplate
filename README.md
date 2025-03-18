@@ -33,4 +33,12 @@ Run: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` in Powershell
 
 `yarn create react-app react_boilerplate`
 
+3. Install dependencies
+
 `yarn add react-router-dom`
+
+`yarn add tailwindcss postcss autoprefixer`
+
+`npx tailwindcss init -p`
+
+`yarn add typescript @types/react @types/react-dom @types/jest`
