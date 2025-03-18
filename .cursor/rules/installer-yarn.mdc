@@ -1,13 +1,14 @@
-# React boilerplate
-boilerplate for react's frameworks
+---
+description: 
+globs: 
+alwaysApply: true
+---
 
-# Cursor rules:
-
-## Code:
+# Code:
 - Prefer YARN instead of NPM or NPX
 - Use Typescript
 
-## Project stucture:
+# Project stucture:
 - Use Prettier format
 - Use Tailwind CSS
 - Don't let a file get too long pass 200 lines
