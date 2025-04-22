@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -8,34 +9,51 @@ import bodyParser from 'body-parser';
 
 import { typeDefs } from './graphql/schema.graphql';
 import { resolvers } from './graphql/resolvers.graphql';
-import { dataSource } from './data/dataSource.data';
+import { UserDataSource } from './data/User.dataSource';
+import { TodoDataSource } from './data/Todo.dataSource';
+
+// Define context type with our data sources
+export interface MyContext {
+  dataSources: {
+    userDataSource: UserDataSource;
+    todoDataSource: TodoDataSource;
+  };
+}
 
 const startServer = async () => {
-  // Express and HTTP server setup
+  // Create Express app and HTTP server
   const app = express();
   const httpServer = http.createServer(app);
 
-  // Apollo Server setup
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+  // Set up Apollo Server
+  const server = new ApolloServer<MyContext>({
+    typeDefs,    // GraphQL schema
+    resolvers,   // Resolver functions
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
-  // Start Apollo Server
+  // Start the Apollo Server
   await server.start();
 
-  // Apply middleware
+  // Set up middleware
   app.use(
     '/graphql',
     cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
-      context: async () => ({
-        dataSources: {
-          dataSource,
-        },
-      }),
+      context: async () => {
+        // Create data sources
+        const userDataSource = new UserDataSource();
+        const todoDataSource = new TodoDataSource();
+
+        // Return context with data sources
+        return {
+          dataSources: {
+            userDataSource,
+            todoDataSource,
+          },
+        };
+      },
     }),
   );
 
@@ -45,6 +63,7 @@ const startServer = async () => {
   console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
 };
 
+// Run the server
 startServer().catch((err) => {
   console.error('Failed to start the server:', err);
 }); 

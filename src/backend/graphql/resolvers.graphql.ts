@@ -1,87 +1,45 @@
+import { MyContext } from '../server'; // Import the context type
+
 export const resolvers = {
   Query: {
-    // User queries
-    users: (_: any, __: any, { dataSources }: any) => {
-      return dataSources.dataSource.getUsers();
-    },
-    user: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.getUserById(id);
+    // Get all users
+    users: (_: any, __: any, { dataSources }: MyContext) => {
+      return dataSources.userDataSource.getUsers();
     },
 
-    // Todo queries
-    todos: (_: any, __: any, { dataSources }: any) => {
-      return dataSources.dataSource.getTodos();
+    // Get all todos
+    todos: (_: any, __: any, { dataSources }: MyContext) => {
+      return dataSources.todoDataSource.getTodos();
     },
-    todo: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.getTodoById(id);
-    },
-    userTodos: (_: any, { userId }: { userId: string }, { dataSources }: any) => {
-      return dataSources.dataSource.getTodosByUserId(userId);
-    },
-
-    // Project queries
-    projects: (_: any, __: any, { dataSources }: any) => {
-      return dataSources.dataSource.getProjects();
-    },
-    project: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.getProjectById(id);
+    
+    // Get a specific todo by ID
+    todo: (_: any, { id }: { id: string }, { dataSources }: MyContext) => {
+      return dataSources.todoDataSource.getTodoById(id);
     },
   },
 
   Mutation: {
-    // User mutations
-    createUser: (_: any, { input }: any, { dataSources }: any) => {
-      return dataSources.dataSource.createUser(input);
+    // Create a new todo
+    createTodo: (_: any, { input }: any, { dataSources }: MyContext) => {
+      return dataSources.todoDataSource.createTodo(input);
     },
-    updateUser: (_: any, { id, input }: any, { dataSources }: any) => {
-      return dataSources.dataSource.updateUser(id, input);
+    
+    // Toggle todo completed status
+    toggleTodoStatus: (_: any, { id }: { id: string }, { dataSources }: MyContext) => {
+      return dataSources.todoDataSource.toggleTodoStatus(id);
     },
-    deleteUser: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.deleteUser(id);
-    },
-
-    // Todo mutations
-    createTodo: (_: any, { input }: any, { dataSources }: any) => {
-      return dataSources.dataSource.createTodo(input);
-    },
-    updateTodo: (_: any, { id, input }: any, { dataSources }: any) => {
-      return dataSources.dataSource.updateTodo(id, input);
-    },
-    deleteTodo: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.deleteTodo(id);
-    },
-    toggleTodoStatus: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.toggleTodoStatus(id);
-    },
-
-    // Project mutations
-    createProject: (_: any, { input }: any, { dataSources }: any) => {
-      return dataSources.dataSource.createProject(input);
-    },
-    updateProject: (_: any, { id, input }: any, { dataSources }: any) => {
-      return dataSources.dataSource.updateProject(id, input);
-    },
-    deleteProject: (_: any, { id }: { id: string }, { dataSources }: any) => {
-      return dataSources.dataSource.deleteProject(id);
-    },
-    addTodoToProject: (_: any, { projectId, todoId }: any, { dataSources }: any) => {
-      return dataSources.dataSource.addTodoToProject(projectId, todoId);
-    },
-    removeTodoFromProject: (_: any, { projectId, todoId }: any, { dataSources }: any) => {
-      return dataSources.dataSource.removeTodoFromProject(projectId, todoId);
+    
+    // Delete a todo
+    deleteTodo: (_: any, { id }: { id: string }, { dataSources }: MyContext) => {
+      return dataSources.todoDataSource.deleteTodo(id);
     },
   },
 
-  // Type resolvers
+  // Resolve relationships
   Todo: {
-    user: (parent: any, _: any, { dataSources }: any) => {
-      return dataSources.dataSource.getUserById(parent.userId);
-    },
-  },
-
-  Project: {
-    todos: (parent: any, _: any, { dataSources }: any) => {
-      return dataSources.dataSource.getProjectTodos(parent.id);
+    // Get the user associated with a todo
+    user: (parent: any, _: any, { dataSources }: MyContext) => {
+      return dataSources.userDataSource.getUserById(parent.userId);
     },
   },
 }; 

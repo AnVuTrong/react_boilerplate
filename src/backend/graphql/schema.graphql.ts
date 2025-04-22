@@ -4,7 +4,6 @@ export const typeDefs = `#graphql
     id: ID!
     name: String!
     email: String!
-    role: String
   }
 
   # Todo type
@@ -17,67 +16,34 @@ export const typeDefs = `#graphql
     user: User
   }
 
-  # Project type
-  type Project {
-    id: ID!
-    name: String!
-    description: String
-    todos: [Todo]
-  }
-
   # Input types
-  input UserInput {
-    name: String!
-    email: String!
-    role: String
-  }
-
   input TodoInput {
     title: String!
     description: String
-    completed: Boolean
     userId: ID!
-  }
-
-  input ProjectInput {
-    name: String!
-    description: String
   }
 
   # Queries
   type Query {
-    # User queries
+    # Get all users
     users: [User]
-    user(id: ID!): User
     
-    # Todo queries
+    # Get all todos
     todos: [Todo]
-    todo(id: ID!): Todo
-    userTodos(userId: ID!): [Todo]
     
-    # Project queries
-    projects: [Project]
-    project(id: ID!): Project
+    # Get a specific todo by ID
+    todo(id: ID!): Todo
   }
 
   # Mutations
   type Mutation {
-    # User mutations
-    createUser(input: UserInput!): User
-    updateUser(id: ID!, input: UserInput!): User
-    deleteUser(id: ID!): Boolean
-    
-    # Todo mutations
+    # Create a new todo
     createTodo(input: TodoInput!): Todo
-    updateTodo(id: ID!, input: TodoInput!): Todo
-    deleteTodo(id: ID!): Boolean
+    
+    # Toggle the completed status of a todo
     toggleTodoStatus(id: ID!): Todo
     
-    # Project mutations
-    createProject(input: ProjectInput!): Project
-    updateProject(id: ID!, input: ProjectInput!): Project
-    deleteProject(id: ID!): Boolean
-    addTodoToProject(projectId: ID!, todoId: ID!): Project
-    removeTodoFromProject(projectId: ID!, todoId: ID!): Project
+    # Delete a todo
+    deleteTodo(id: ID!): Boolean
   }
 `; 
